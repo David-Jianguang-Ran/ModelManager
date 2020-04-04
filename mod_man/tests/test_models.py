@@ -39,7 +39,6 @@ class ModelsTest(TestCase):
         k_mod.add_notes("first string")
         k_mod.add_notes("second string")
 
-        print("visually inspect notes of k model below")
         print(k_mod.notes)
         self.assertTrue(type(k_mod.notes) == str)
 

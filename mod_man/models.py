@@ -37,6 +37,12 @@ class BaseModel(models.Model):
     # TODO refactor notes into artifact i guess
     notes = models.TextField()
 
+    # star / flag system
+    stared = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.name)
+
     def add_notes(self,string_notes):
         """
         this method appends notes to existing notes with a time stamp <= dumb string nothing fancy
@@ -118,6 +124,7 @@ class KModel(BaseModel):
 class Artifact(BaseModel):
     """
     This class stores reference to local files that are related to kmodels
+    TODO implement special class for keeping pickled python objects
     """
 
     # a short string denote the type of data this artifact is
