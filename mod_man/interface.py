@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from tensorflow.contrib import keras
 from .models import KModel
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 # This interfaces here are sort of like django views
 # but they are meant for a python API, not designed to be request handlers
@@ -13,12 +13,14 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def get_history(kmodel=None):
     """
-    returns a python dict with key = metric_name val = [metric each epoch ]
+    returns a python dict with key = metric_id val = [metric each epoch ]
     """
     if isinstance(kmodel,str):
         try:
-            kmodel = KModel.objects.get(name=kmodel)
+            kmodel = KModel.objects.get(id=kmodel)
         except ObjectDoesNotExist:
+            return None
+        except ValidationError:
             return None
     elif isinstance(kmodel, KModel):
         # awesome! proceed
@@ -27,7 +29,7 @@ def get_history(kmodel=None):
         raise ValueError("call get_history with etiher a str uuid for model or a db model instance")
 
     if kmodel.artifacts.filter(descriptor="history").exists():
-        artifact_path = kmodel.artifacts.filter(descriptor="history")[-1].path
+        artifact_path = kmodel.artifacts.get(descriptor="history").path
         return pickle.load(open(artifact_path,"rb"))
     else:
         return None
@@ -52,9 +54,9 @@ def plot_history_many(in_models:[]=(None),lateral_compare=False,ignore_none=Fals
         # then assigned as the new history_table
         lateral_history = {}
 
-        def _reorganize_history(model_name,history_dict):
+        def _reorganize_history(model_id,history_dict):
             for metric, values in history_dict.items():
-                lateral_history[metric].update(model_name,values)
+                lateral_history[metric].update(model_id,values)
 
         map(_reorganize_history,history_table.items())
         history_table = lateral_history
@@ -70,9 +72,9 @@ def plot_history_many(in_models:[]=(None),lateral_compare=False,ignore_none=Fals
         """
         for metric_label, metric_series in label_history:
             ax[i].scatter(metric_series, range(0, len(metric_series)), label=metric_label)
-            ax[i].title(graph_title)
+            # ax[i].title(graph_title)
 
-    map(_plot_each_metric,*history_table.items(),range(0,len(history_table)))
+    map(_plot_each_metric,*list(history_table.items()),range(0,len(history_table)))
 
     return fig
 

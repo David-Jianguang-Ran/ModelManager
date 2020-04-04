@@ -28,14 +28,14 @@ class ModelsTest(TestCase):
         self.assertEqual(self.model_test.path[:len(KMODEL_DIR)], KMODEL_DIR)
 
     def test_add_notes_empty(self):
-        k_mod = KModel.objects.get(name=self.model_test.name)
+        k_mod = KModel.objects.get(id=self.model_test.id)
         test_string = "test string"
         k_mod.add_notes(test_string)
 
         self.assertEqual(k_mod.notes,str(datetime.datetime.now())[:-7] + "  " + test_string)
 
     def test_add_notes_append(self):
-        k_mod = KModel.objects.get(name=self.model_test.name)
+        k_mod = KModel.objects.get(id=self.model_test.id)
         k_mod.add_notes("first string")
         k_mod.add_notes("second string")
 
@@ -63,8 +63,8 @@ class ModelsTest(TestCase):
         art_mod = kmod.add_artifact(test_payload,descriptor="tester")
 
         # checking if relationship exists
-        self.assertTrue(kmod.artifacts.filter(name=art_mod.name).exists())
-        self.assertEqual(art_mod.parent.name,kmod.name)
+        self.assertTrue(kmod.artifacts.filter(id=art_mod.id).exists())
+        self.assertEqual(art_mod.parent.id,kmod.id)
 
         # checking if path has correct format
         self.assertEqual(art_mod.path[-7:],".pickle")

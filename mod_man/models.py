@@ -30,7 +30,7 @@ class BaseModel(models.Model):
     provides functionality for keeping track of local files and appending notes
     """
     # basic info
-    name = models.UUIDField(primary_key=True,default=uuid4,editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     path = models.CharField(max_length=256,null=True)
 
     # notes
@@ -41,7 +41,7 @@ class BaseModel(models.Model):
     stared = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.id)
 
     def add_notes(self,string_notes):
         """
@@ -74,7 +74,7 @@ class KModel(BaseModel):
     # artifacts => Artifact class : one to many
     @property
     def default_path(self):
-        return str(KMODEL_DIR + "/" + str(self.name) + ".h5")
+        return str(KMODEL_DIR + "/" + str(self.id) + ".h5")
 
     def add_artifact(self, artifact=None, descriptor="unspecified", plot=False):
         """
@@ -86,10 +86,10 @@ class KModel(BaseModel):
 
         # dump artifact into file system and save the path to django model
         if not plot:
-            path = ARTIFACT_DIR + "/" + str(artifact_model.name) + ".pickle"
+            path = ARTIFACT_DIR + "/" + str(artifact_model.id) + ".pickle"
             pickle.dump(artifact, open(path, "wb"))
         else:
-            path = ARTIFACT_DIR + "/" + str(artifact_model.name) + ".png"
+            path = ARTIFACT_DIR + "/" + str(artifact_model.id) + ".png"
             artifact.savefig(path)
         artifact_model.path = path
         artifact_model.save()
