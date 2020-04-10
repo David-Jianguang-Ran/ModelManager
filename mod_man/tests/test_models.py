@@ -30,14 +30,14 @@ class ModelsTest(TestCase):
     def test_add_notes_empty(self):
         k_mod = KModel.objects.get(id=self.model_test.id)
         test_string = "test string"
-        k_mod.add_notes(test_string)
+        k_mod.add_note(test_string)
 
         self.assertEqual(k_mod.notes,str(datetime.datetime.now())[:-7] + "  " + test_string)
 
     def test_add_notes_append(self):
         k_mod = KModel.objects.get(id=self.model_test.id)
-        k_mod.add_notes("first string")
-        k_mod.add_notes("second string")
+        k_mod.add_note("first string")
+        k_mod.add_note("second string")
 
         print(k_mod.notes)
         self.assertTrue(type(k_mod.notes) == str)

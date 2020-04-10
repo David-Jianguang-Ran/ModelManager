@@ -32,6 +32,7 @@ class BaseModel(models.Model):
     # basic info
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     path = models.CharField(max_length=256,null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     # notes
     # TODO refactor notes into artifact i guess
@@ -43,9 +44,9 @@ class BaseModel(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def add_notes(self,string_notes):
+    def add_note(self, string_notes):
         """
-        this method appends notes to existing notes with a time stamp <= dumb string nothing fancy
+        this method appends notes to kmodel_instance.notes along with a time stamp
         """
         string_notes = str(datetime.datetime.now())[:-7] + "  " + string_notes
 
@@ -98,7 +99,8 @@ class KModel(BaseModel):
 
     def add_tags(self,tags_str=()):
         """
-        this one finds tag obj by str title and add relation to self
+        this method accepts a list of tags, str or Tag model instance.
+        then adds a many-to-many relationship from self to the Tag obj
         """
         if type(tags_str) == str:
             tags_str = [tags_str]
@@ -109,7 +111,8 @@ class KModel(BaseModel):
 
     def remove_tags(self,tags_str=()):
         """
-        removes db relationship to the tag but not the tag itself
+        this method accepts a list of tags, str or Tag model instance.
+        then removes the many-to-many relationship from self to the Tag obj but not the Tag itself
         """
         if type(tags_str) == str:
             tags_str = [tags_str]

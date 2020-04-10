@@ -29,13 +29,13 @@ class RecorderMixin:
     @staticmethod
     def simulate_training(recorder_callback):
         # its just like training if you squint (-)_(-)
-        data_slope = random()
         for i in range(0,100):
+            data_slope = random()
             recorder_callback.on_epoch_end(
                 i,
                 {
-                    "loss":data_slope *(100 - i),
-                    "acc":data_slope * (i)
+                    "loss":100 - i * data_slope,
+                    "acc":i * data_slope
                 }
             )
         return recorder_callback
@@ -77,7 +77,6 @@ class InterfaceTest(TestCase, RecorderMixin):
         self.assertEqual(["loss","acc"],list(result_1.keys()))
 
         # for a model without history artifact, return none
-
         kmodel_2 = KModel()
         kmodel_2.save()
 
@@ -88,10 +87,12 @@ class InterfaceTest(TestCase, RecorderMixin):
         # replace some str model ids with model obj
         some_replaced = [(random() >= 0.5) and id or KModel.objects.get(id=id) for id in self.model_ids]
 
-        result = plot_history_many(some_replaced[0:2])
+        result, dat = plot_history_many(some_replaced,lateral_compare=True)
 
         self.assertTrue(isinstance(result, plt.Figure))
         result.show()
+
+        self.assertEqual(list(dat.keys()),["loss","acc"])
 
 
 class RecorderTest(TestCase, RecorderMixin):

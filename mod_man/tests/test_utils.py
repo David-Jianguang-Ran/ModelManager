@@ -33,5 +33,5 @@ class ModelUtilsTest(TestCase):
         result_df = query_set_to_df(q_set)
 
         self.assertTrue(isinstance(result_df,pd.DataFrame))
-        self.assertEqual(list(result_df.columns),["id","path","notes","stared","epochs_trained","loss","val_loss"])
-        self.assertEqual(result_df.shape,(2,7))
+        self.assertEqual(list(result_df.columns),["id","path","timestamp","notes","stared","epochs_trained","loss","val_loss"])
+        self.assertEqual(result_df.shape,(2,8))
