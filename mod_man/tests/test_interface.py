@@ -47,7 +47,7 @@ class InterfaceTest(TestCase, RecorderMixin):
         # make some dummy db records, collect id in self.model_ids
         self.model_ids = []
         tags = ["existing_tag_1"]
-        for i in range(0,10):
+        for i in range(0,6):
             rec = self.get_recorder(tags)
             rec = self.simulate_training(rec)
             rec.on_train_end()
@@ -83,7 +83,7 @@ class InterfaceTest(TestCase, RecorderMixin):
         result_2 = get_history(kmodel_2)
         self.assertIsNone(result_2)
 
-    def test_plot_history_many_mixed(self):
+    def test_plot_history_many_mixed_lateral(self):
         # replace some str model ids with model obj
         some_replaced = [(random() >= 0.5) and id or KModel.objects.get(id=id) for id in self.model_ids]
 
@@ -93,6 +93,17 @@ class InterfaceTest(TestCase, RecorderMixin):
         result.show()
 
         self.assertEqual(list(dat.keys()),["loss","acc"])
+
+    def test_plot_history_many_mixed(self):
+        # replace some str model ids with model obj
+        some_replaced = [(random() >= 0.5) and id or KModel.objects.get(id=id) for id in self.model_ids]
+
+        result, dat = plot_history_many(some_replaced,lateral_compare=False)
+
+        self.assertTrue(isinstance(result, plt.Figure))
+        result.show()
+
+        self.assertEqual(list(dat.keys()),self.model_ids)
 
 
 class RecorderTest(TestCase, RecorderMixin):

@@ -2,7 +2,7 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from tensorflow.contrib import keras
+from tensorflow import keras
 from .models import KModel
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
