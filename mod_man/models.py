@@ -135,3 +135,15 @@ class Artifact(BaseModel):
 
     parent = models.ForeignKey(KModel,related_name="artifacts",on_delete=models.CASCADE)
 
+    # TODO rename payload to something less scary
+    @property
+    def payload(self):
+        """
+        returns pickled object under self.path
+        cached to avoid loading from disk every time this property is accessed
+        """
+        try:
+            return self._cached_payload
+        except AttributeError:
+            self._cached_payload = pickle.load(open(str(self.path),"rb"))
+            return self._cached_payload

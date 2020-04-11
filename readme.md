@@ -5,7 +5,7 @@ Utility app for managing Keras models records and associated files
 ## API
 
 #### KModel 
-inherents from django.db.Model  
+inherits from django.db.Model  
 
 additional methods :    
    - _add_note_ (note : string) this method appends notes to kmodel_instance.notes along with a time stamp   
@@ -23,6 +23,18 @@ additional methods :
     if plot is true and a pyplot.plot object is passed as artifact, 
     a png of the plot would be saved instead of pickle
     
+    
+#### Artifact
+inherits from django.db.Model  
+This class is meant to be a record of pickled python objects 
+such as model outputs, custom loss functions or Keras model factories.  
+Note : artifact couldn't easily modified once created, this will be fixed in the future.  
+
+additional methods : 
+    - _payload_ @property this property returns pickled object, 
+    multiple calls of this method on the same object 
+    will not result in multiple loads.
+
 #### RecorderCallback 
 inherents from keras.callbacks.Callback
     

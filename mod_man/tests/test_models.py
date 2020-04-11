@@ -73,4 +73,9 @@ class ModelsTest(TestCase):
         # test loading payload and compare
         self.assertEqual(str(pickle.load(open(art_mod.path,"rb"))),str(test_payload))
 
+    def test_get_payload_exist(self):
+        kmod = self.model_test
+        test_payload = {"name":"test object 2", "purpose":"to test!"}
+        art_mod = kmod.add_artifact(test_payload,descriptor="tester")
 
+        self.assertEqual(art_mod.payload,test_payload)
