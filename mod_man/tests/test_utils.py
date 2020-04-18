@@ -3,7 +3,7 @@ import pandas as pd
 from django.test import TestCase
 
 
-from mod_man.utils import query_set_to_df
+from mod_man.utils import *
 from mod_man.models import KModel, Tags
 
 
@@ -33,5 +33,21 @@ class ModelUtilsTest(TestCase):
         result_df = query_set_to_df(q_set)
 
         self.assertTrue(isinstance(result_df,pd.DataFrame))
-        self.assertEqual(list(result_df.columns),["id","path","timestamp","notes","stared","epochs_trained","loss","val_loss"])
+        self.assertEqual(
+            list(result_df.columns),
+            ["id","path","timestamp","notes","stared","epochs_trained","loss","val_loss"]
+        )
         self.assertEqual(result_df.shape,(2,8))
+
+    def test_query_set_to_html(self):
+
+        q_set = KModel.objects.all()
+
+        q_html, ids = query_set_to_html(q_set)
+
+        # test if output is valid html with the correct column headers
+        for each_column_id in ["id","path","timestamp","notes","stared","epochs_trained","loss","val_loss"]:
+            self.assertInHTML(f"<th>{each_column_id}</th>",q_html)
+
+
+

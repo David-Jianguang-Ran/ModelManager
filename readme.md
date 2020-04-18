@@ -4,6 +4,23 @@ Utility app for managing Keras models records and associated files
 
 ## API
 
+#### functional API
+here are some methods used to interact with saved data
+
+   - _show_all_models_ 
+   
+   - _show_models_with_tag_ (tag : str) 
+   
+   - _dump_models_to_df_ 
+   
+   - _get_history_ (kmodel : KModel instance)
+   
+   - _plot_history_many_ (in_models : [] , lateral_compare : bool, ignore_none : bool)
+        in_models : list of any combinations of str or db kmodel instance  
+    lateral_compare : bool, whether the plots will be grouped by models or metrics   
+    ignore_none : bool, whether to ignore models that don't have a history artifact  
+    return : (a matplotlib figure obj, data dict)  
+
 #### KModel 
 inherits from django.db.Model  
 
@@ -40,6 +57,9 @@ inherents from keras.callbacks.Callback
     
 
 ## How Does this work? 
+
+Here is a [Jupyter Notebook Demo](https://colab.research.google.com/drive/17x4ha7EQrOxWcnrKXkRyOV0o-gsfHyWP#scrollTo=sHk62RwlPORa)
+hosted on Google Colab
 
 #### Saving model 
 Save the model and training history by passing a instance of RecorderCallback to fit or fit_generator

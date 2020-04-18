@@ -3,13 +3,40 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from tensorflow import keras
-from .models import KModel
+from .models import KModel, Tags
+from .utils import query_set_to_html, query_set_to_df
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 # This interfaces here are sort of like django views
 # but they are meant for a python API, not designed to be request handlers
 
 
+# html show-er function
+def show_all_models():
+    """
+    return html , [ model_ids ]
+    """
+    query_set = KModel.objects.all()
+    return query_set_to_html(query_set)
+
+
+def show_models_with_tag(tag_str: str):
+    """
+    return html , [ model_ids ]
+    """
+    tag_obj = Tags.objects.get(title=tag_str)
+    return query_set_to_html(tag_obj.models.all())
+
+
+def dump_models_to_df():
+    """
+    return pandas.DataFrame
+    """
+    q_set = KModel.objects.all()
+    return query_set_to_df(q_set)
+
+
+# history artifact related
 def get_history(kmodel=None):
     """
     returns a python dict with key = metric_id val = [metric each epoch ]
@@ -41,6 +68,8 @@ def get_history(kmodel=None):
 def plot_history_many(in_models:[]=(None),lateral_compare=False,ignore_none=False):
     """
     in_models : list of any combinations of str or db kmodel instance
+    lateral_compare : bool, whether the plots will be grouped by models or metrics
+    ignore_none : bool, whether to ignore models that don't have a history artifact
     return : a matplotlib figure obj, data dict
     """
     # iterate through in models and collect history
@@ -79,7 +108,8 @@ def plot_history_many(in_models:[]=(None),lateral_compare=False,ignore_none=Fals
 
     return fig, history_table
 
-
+# main method of collecting model
+# meant to interfact with keras
 class RecorderCallback(keras.callbacks.Callback):
     """
     this call back saves history data and keras model to disk

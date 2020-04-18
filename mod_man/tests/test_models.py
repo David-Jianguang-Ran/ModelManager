@@ -39,7 +39,7 @@ class ModelsTest(TestCase):
         k_mod.add_note("first string")
         k_mod.add_note("second string")
 
-        print(k_mod.notes)
+        # print(k_mod.notes)
         self.assertTrue(type(k_mod.notes) == str)
 
     def test_add_tags(self):

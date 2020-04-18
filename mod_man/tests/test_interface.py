@@ -105,6 +105,19 @@ class InterfaceTest(TestCase, RecorderMixin):
 
         self.assertEqual(list(dat.keys()),self.model_ids)
 
+    def test_show_all_models(self):
+
+        html, ids = show_all_models()
+
+        # test if all model ids have been returned
+        self.assertEqual([str(x) for x in ids],self.model_ids)
+
+    def test_show_models_with_tag(self):
+
+        html, ids = show_models_with_tag("existing_tag_1")
+
+        self.assertEqual([str(x) for x in ids],self.model_ids)
+
 
 class RecorderTest(TestCase, RecorderMixin):
 
